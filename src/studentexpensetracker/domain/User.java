@@ -5,6 +5,7 @@ package studentexpensetracker.domain;
 
 import static studentexpensetracker.helpers.ExpenseUtils.*;
 
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,6 +20,7 @@ public class User {
     private double budget;
     private List<Expense> expenses;
     private double exceededAmount = 0.0;
+    private Month budgetMonth;
     
  // Constructor with default budget
     public User(String name) {
@@ -109,5 +111,13 @@ public class User {
     
     public void setExceededAmount(double exceededAmount) {
         this.exceededAmount = exceededAmount;
+    }
+    
+    public Month getBudgetMonth() {
+        return budgetMonth;
+    }
+
+    public void setBudgetMonth(Month budgetMonth) {
+        this.budgetMonth = budgetMonth;
     }
 }

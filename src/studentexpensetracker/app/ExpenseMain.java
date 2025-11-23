@@ -32,14 +32,17 @@ public class ExpenseMain {
         System.out.println("===========================================");
         
         Map<String, Double> userData = ExpenseUtils.loadUserData();
-
+       
         System.out.print("Enter your name: ");
         String name = sc.nextLine();
         
         double budget;
+        
+        // If user already exists, fetch existing budget.
         if (userData.containsKey(name)) {
             budget = userData.get(name);
             System.out.println("Welcome back, " + name + "! Your saved monthly budget is €" + budget);
+        // For new users, input the budget and save the user data to a text file
         } else {
             System.out.print("Enter your monthly budget (€): ");
             budget = sc.nextDouble();
@@ -51,8 +54,12 @@ public class ExpenseMain {
         
         User user = new User(name, budget);
         
+        // Set the budget month
+        user.setBudgetMonth(java.time.LocalDate.now().getMonth());
+        
         boolean budgeting = true;
         
+        // Menu display for different expense cattegories and summary
         while (budgeting) {
             System.out.println("\n-------------------------------------------");
             System.out.println("Choose an expense category:");
@@ -237,6 +244,8 @@ public class ExpenseMain {
 	    System.out.println("             Expense Summary");
 	    System.out.println("===========================================");
 	    manager.displayAll();
+	    
+	    System.out.println("Budget for " + user.getBudgetMonth() + ": €" + user.getBudget());
 
 	    System.out.println("\nTotal Spent: " + formatCurrency(report.totalSpent()));
 	    printSpendingByCategory(manager);
@@ -253,15 +262,19 @@ public class ExpenseMain {
 
 	        StringBuilder reportBuilder = new StringBuilder();
 
-	        // Header
+	        // Report Header
 	        if (fileExistsAndHasData) {
 	            reportBuilder.append("\n=== New Session Report (")
 	                         .append(java.time.LocalDate.now())
 	                         .append(") ===\n");
 	        } else {
-	            reportBuilder.append("=== Expense Summary Report ===\n")
-	                         .append("User: ").append(user.getName()).append("\n")
-	                         .append("Total Budget: ").append(formatCurrency(user.getBudget())).append("\n\n");
+	        	reportBuilder.append("=== Monthly Expense Report for ")
+	            .append(user.getBudgetMonth())
+	            .append(" ")
+	            .append(java.time.LocalDate.now().getYear())
+	            .append(" for " + user.getName() + " ")
+	            .append(" ===\n")
+	            .append("Total Budget: ").append(formatCurrency(user.getBudget())).append("\n\n");
 	        }
 	        
 	        // Update current budget
