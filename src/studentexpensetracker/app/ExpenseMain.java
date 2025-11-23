@@ -263,6 +263,9 @@ public class ExpenseMain {
 	                         .append("User: ").append(user.getName()).append("\n")
 	                         .append("Total Budget: ").append(formatCurrency(user.getBudget())).append("\n\n");
 	        }
+	        
+	        // Update current budget
+	        reportBuilder.append("Current Budget: ").append(formatCurrency(user.getBudget())).append("\n");
 
 	        // Summary Section
 	        reportBuilder.append("Total Spent: ").append(formatCurrency(report.totalSpent())).append("\n")
