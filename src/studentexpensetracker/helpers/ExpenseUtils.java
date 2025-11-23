@@ -74,6 +74,15 @@ public final class ExpenseUtils {
     }
     
     public static void printSpendingDistribution(ExpenseManager manager, double total) {
+    	
+    	// ANSI color codes for console output
+        final String RESET = "\u001B[0m";
+        final String RED = "\u001B[31m";
+        final String GREEN = "\u001B[32m";
+        final String YELLOW = "\u001B[33m";
+        final String BLUE = "\u001B[34m";
+        final String CYAN = "\u001B[36m";
+        final String MAGENTA = "\u001B[35m";
 
         System.out.println("\nSpending Distribution:");
 
@@ -81,11 +90,23 @@ public final class ExpenseUtils {
             double percentage = (value / total) * 100;
             int barLength = (int) (percentage / 2);
             String bar = "|".repeat(barLength);
+            
+         // Choose color based on category
+            String color = switch (cat) {
+                case FOOD -> YELLOW;
+                case TRAVEL -> CYAN;
+                case EDUCATION -> BLUE;
+                case ENTERTAINMENT -> GREEN;
+                case RENT_UTILITY -> RED;
+                case MISCELLANEOUS -> MAGENTA;
+            };
 
             System.out.printf("%-20s %6.2f%% | %s%s%s%n",
                     cat.name().replace("_", " & "),
                     percentage,
-                    bar
+                    color,
+                    bar,
+                    RESET
                     );
         });
     }
