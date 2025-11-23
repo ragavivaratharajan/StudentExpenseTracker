@@ -63,7 +63,10 @@ public class ExpenseManager implements Calculatable {
                     userData.put(user.getName(), user.getBudget());
                     ExpenseUtils.saveUserData(userData);
                     System.out.println("User data updated successfully.");
-
+                    
+                    double oldBudget = user.getBudget();
+                    user.setBudget(user.getBudget() + extra);
+                    BudgetHistoryManager.logBudgetChange(user.getName(), oldBudget, user.getBudget(), "Exceeded limit - manual increase");
 
                     // Re check after increasing the budget
                     if (projectedTotal > user.getBudget()) {
