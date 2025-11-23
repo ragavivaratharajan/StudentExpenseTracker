@@ -89,7 +89,7 @@ public final class ExpenseUtils {
         manager.getTotalByCategory().forEach((cat, value) -> {
             double percentage = (value / total) * 100;
             int barLength = (int) (percentage / 2);
-            String bar = "|".repeat(barLength);
+            String bar = "\u2588".repeat(barLength);
             
          // Choose color based on category
             String color = switch (cat) {
@@ -130,7 +130,7 @@ public final class ExpenseUtils {
             try {
                 double percentage = (value / total) * 100;
                 int barLength = (int) (percentage / 2);
-                String bar = "|".repeat(barLength);
+                String bar = "\u2588".repeat(barLength);
                 writer.write(String.format("%-20s %6.2f%% | %s%n",
                         cat.name().replace("_", " & "), percentage, bar));
             } catch (IOException e) {
