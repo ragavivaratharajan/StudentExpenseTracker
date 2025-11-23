@@ -57,6 +57,13 @@ public class ExpenseManager implements Calculatable {
                     sc.nextLine();
                     user.setBudget(user.getBudget() + extra);
                     System.out.println("Budget successfully updated to €" + String.format("%.2f", user.getBudget()));
+                    
+                    // Update the budget in UserData.txt
+                    Map<String, Double> userData = ExpenseUtils.loadUserData();
+                    userData.put(user.getName(), user.getBudget());
+                    ExpenseUtils.saveUserData(userData);
+                    System.out.println("User data updated successfully.");
+
 
                     // Re check after increasing the budget
                     if (projectedTotal > user.getBudget()) {
