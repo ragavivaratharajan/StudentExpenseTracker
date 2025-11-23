@@ -22,6 +22,17 @@ import studentexpensetracker.manager.ExpenseManager;
  */
 public final class ExpenseUtils {
 	
+	public static final String RESET = "\u001B[0m";
+	public static final String RED = "\u001B[31m";
+	public static final String GREEN = "\u001B[32m";
+	public static final String YELLOW = "\u001B[33m";
+	public static final String BLUE = "\u001B[34m";
+	public static final String PURPLE = "\u001B[35m";
+	public static final String CYAN = "\u001B[36m";
+	public static final String WHITE = "\u001B[37m";
+	public static final String BOLD = "\u001B[1m";
+	public static final String MAGENTA = "\u001B[35m";
+	
 	public static String formatDate(LocalDate date) {
         return date.format(DateTimeFormatter.ofPattern("dd MMM yyyy"));
     }
@@ -74,15 +85,6 @@ public final class ExpenseUtils {
     }
     
     public static void printSpendingDistribution(ExpenseManager manager, double total) {
-    	
-    	// ANSI color codes for console output
-        final String RESET = "\u001B[0m";
-        final String RED = "\u001B[31m";
-        final String GREEN = "\u001B[32m";
-        final String YELLOW = "\u001B[33m";
-        final String BLUE = "\u001B[34m";
-        final String CYAN = "\u001B[36m";
-        final String MAGENTA = "\u001B[35m";
 
         System.out.println("\nSpending Distribution:");
 
@@ -159,5 +161,9 @@ public final class ExpenseUtils {
             System.err.println("Error reading report file: " + e.getMessage());
         }
         return lastTotal;
+    }
+    
+    public static String colorText(String text, String color) {
+        return color + text + RESET;
     }
 }

@@ -28,7 +28,7 @@ public class ExpenseMain {
         Scanner sc = new Scanner(System.in);
         
         System.out.println("===========================================");
-        System.out.println("      Student Expense Tracker App");
+        System.out.println(colorText("      Student Expense Tracker App", BLUE));
         System.out.println("===========================================");
         
         Map<String, Double> userData = ExpenseUtils.loadUserData();
@@ -41,7 +41,7 @@ public class ExpenseMain {
         // If user already exists, fetch existing budget.
         if (userData.containsKey(name)) {
             budget = userData.get(name);
-            System.out.println("Welcome back, " + name + "! Your saved monthly budget is €" + budget);
+            System.out.println(colorText("Welcome back, " + name + "! Your saved monthly budget is €" + budget, PURPLE));
         // For new users, input the budget and save the user data to a text file
         } else {
             System.out.print("Enter your monthly budget (€): ");
@@ -49,7 +49,7 @@ public class ExpenseMain {
             sc.nextLine();
             userData.put(name, budget);
             ExpenseUtils.saveUserData(userData);
-            System.out.println("User saved successfully!");
+            System.out.println(colorText("User saved successfully!", GREEN));
         }
         
         User user = new User(name, budget);
@@ -63,13 +63,13 @@ public class ExpenseMain {
         while (budgeting) {
             System.out.println("\n-------------------------------------------");
             System.out.println("Choose an expense category:");
-            System.out.println("1. Food");
-            System.out.println("2. Travel");
-            System.out.println("3. Education");
-            System.out.println("4. Entertainment");
-            System.out.println("5. Rent & Utilities");
-            System.out.println("6. Miscellaneous");
-            System.out.println("7. Show summary & exit");
+            System.out.println(colorText("1. Food", PURPLE));
+            System.out.println(colorText("2. Travel", PURPLE));
+            System.out.println(colorText("3. Education", PURPLE));
+            System.out.println(colorText("4. Entertainment", PURPLE));
+            System.out.println(colorText("5. Rent & Utilities", PURPLE));
+            System.out.println(colorText("6. Miscellaneous", PURPLE));
+            System.out.println(colorText("7. Show summary & exit", PURPLE));
             System.out.print("\nEnter choice: ");
             int choice = sc.nextInt();
             sc.nextLine();
@@ -83,7 +83,7 @@ public class ExpenseMain {
                     
                     try {
                         manager.addExpense(user, new FoodExpense(amt, mealType), sc);
-                        System.out.println("Food expense added!");
+                        System.out.println(colorText("Food expense added!", GREEN));
                     } catch (BudgetExceededException e) {
                         System.err.println(e.getMessage());
                     }  
@@ -91,9 +91,9 @@ public class ExpenseMain {
 
                 case 2 -> {
                     System.out.println("Choose travel mode:" );
-                    System.out.println("1. Bus (Student discount eligible)");
-                    System.out.println("2. Train (Student discount eligible)");
-                    System.out.println("3. Private Transport (No discounts)");
+                    System.out.println(colorText("1. Bus (Student discount eligible)", CYAN));
+                    System.out.println(colorText("2. Train (Student discount eligible)", CYAN));
+                    System.out.println(colorText("3. Private Transport (No discounts)", CYAN));
                     int mode = sc.nextInt(); sc.nextLine();
                     ExpenseUtils.validateChoice(mode, 1, 3);
                     System.out.print("Enter amount (€): ");
@@ -126,15 +126,15 @@ public class ExpenseMain {
                         } catch (BudgetExceededException e) {
                             System.err.println(e.getMessage());
                         }   
-                    System.out.println("Travel expense added!");
+                    System.out.println(colorText("Travel expense added!", GREEN));
                 }
 
                 case 3 -> {
                     System.out.println("Choose education item type:");
-                    System.out.println("1. Books");
-                    System.out.println("2. Online Course purchase ");
-                    System.out.println("3. Stationery");
-                    System.out.println("4. Printouts (only on campus)");
+                    System.out.println(colorText("1. Books", YELLOW));
+                    System.out.println(colorText("2. Online Course purchase ", YELLOW));
+                    System.out.println(colorText("3. Stationery", YELLOW));
+                    System.out.println(colorText("4. Printouts (only on campus)", YELLOW));
                     System.out.print("Enter choice: ");
                     int eduChoice = sc.nextInt();
                     sc.nextLine();
@@ -150,7 +150,7 @@ public class ExpenseMain {
                             
                             try {
                             	manager.addExpense(user, new EducationExpense(amt, type), sc);
-                            	System.out.println("Education expense added!");
+                            	System.out.println(colorText("Education expense added!", GREEN));
                             } catch (BudgetExceededException e) {
                                 System.err.println(e.getMessage());
                             }                            
@@ -165,7 +165,7 @@ public class ExpenseMain {
                             
                             try {
                             	manager.addExpense(user, new EducationExpense("Printouts", bw, color), sc);
-                            	System.out.println("Printout expense added!");
+                            	System.out.println(colorText("Printout expense added!", GREEN));
                             } catch (BudgetExceededException e) {
                                 System.err.println(e.getMessage());
                             }    
@@ -184,7 +184,7 @@ public class ExpenseMain {
                     
                     try {
                         manager.addExpense(user, new EntertainmentExpense(amt, act), sc);
-                        System.out.println("Entertainment expense added!");
+                        System.out.println(colorText("Entertainment expense added!", GREEN));
                     } catch (BudgetExceededException e) {
                         System.err.println(e.getMessage());
                     }                      
@@ -202,7 +202,7 @@ public class ExpenseMain {
                     
                     try {
                     	manager.addExpense(user, new RentAndUtilityExpense(amt, type, dueDate, recurring), sc);
-                        System.out.println("Rent/Utility expense added!");
+                        System.out.println(colorText("Rent/Utility expense added!", GREEN));
                     } catch (BudgetExceededException e) {
                         System.err.println(e.getMessage());
                     }                    
@@ -218,7 +218,7 @@ public class ExpenseMain {
                     
                     try {
                         manager.addExpense(user, new MiscellaneousExpense(amt, type, desc), sc);
-                        System.out.println("Miscellaneous expense added!");
+                        System.out.println(colorText("Miscellaneous expense added!", GREEN));
                     } catch (BudgetExceededException e) {
                         System.err.println(e.getMessage());
                     }
@@ -241,13 +241,13 @@ public class ExpenseMain {
 	
 	private static void showSummary(User user, ExpenseManager manager, ExpenseReport report) {
 	    System.out.println("\n===========================================");
-	    System.out.println("             Expense Summary");
+	    System.out.println(colorText("             Expense Summary", MAGENTA));
 	    System.out.println("===========================================");
 	    manager.displayAll();
 	    
-	    System.out.println("Budget for " + user.getBudgetMonth() + ": €" + user.getBudget());
+	    System.out.println("\nBudget for " + user.getBudgetMonth() + ": " + colorText(formatCurrency(user.getBudget()), GREEN));
 
-	    System.out.println("\nTotal Spent: " + formatCurrency(report.totalSpent()));
+	    System.out.println("\nTotal Spent: " + colorText(formatCurrency(report.totalSpent()), RED));
 	    printSpendingByCategory(manager);
 	    System.out.println("\nTop Category: " +
 	            report.topCategory().name().replace("_", " & ").toLowerCase());
@@ -310,8 +310,6 @@ public class ExpenseMain {
 
 	        writer.write(cumulativeBuilder.toString());
 	        writer.flush();
-	        
-	        
 
 	        System.out.println("\nReport saved successfully as " + fileName);
 	    } catch (IOException e) {
@@ -319,7 +317,7 @@ public class ExpenseMain {
 	    }
 
 	    System.out.println("===========================================");
-	    System.out.println("         Thank you for using the app!");
+	    System.out.println(colorText("         Thank you for using the app!", BLUE));
 	    System.out.println("===========================================");
 	}
 }
