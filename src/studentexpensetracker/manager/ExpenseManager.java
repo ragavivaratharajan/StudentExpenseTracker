@@ -53,20 +53,21 @@ public class ExpenseManager implements Calculatable {
             if (choice.equals("yes")) {
                 System.out.print("Enter additional budget amount (€): ");
                 try {
-                    double extra = sc.nextDouble();
-                    sc.nextLine();
-                    user.setBudget(user.getBudget() + extra);
-                    System.out.println("Budget successfully updated to €" + String.format("%.2f", user.getBudget()));
-                    
-                    // Update the budget in UserData.txt
-                    Map<String, Double> userData = ExpenseUtils.loadUserData();
-                    userData.put(user.getName(), user.getBudget());
-                    ExpenseUtils.saveUserData(userData);
-                    System.out.println("User data updated successfully.");
-                    
-                    double oldBudget = user.getBudget();
-                    user.setBudget(user.getBudget() + extra);
-                    BudgetHistoryManager.logBudgetChange(user.getName(), oldBudget, user.getBudget(), "Exceeded limit - manual increase");
+                	double extra = sc.nextDouble();
+                	sc.nextLine();
+
+                	double oldBudget = user.getBudget();
+                	user.setBudget(oldBudget + extra);
+                	System.out.println("Budget successfully updated to €" + String.format("%.2f", user.getBudget()));
+
+                	// Save updated budget persistently
+                	Map<String, Double> userData = ExpenseUtils.loadUserData();
+                	userData.put(user.getName(), user.getBudget());
+                	ExpenseUtils.saveUserData(userData);
+                	System.out.println("User data updated successfully.");
+
+                	// Log the change
+                	BudgetHistoryManager.logBudgetChange(user.getName(), oldBudget, user.getBudget(), "Exceeded limit - manual increase");
 
                     // Re check after increasing the budget
                     if (projectedTotal > user.getBudget()) {
