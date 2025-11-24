@@ -63,13 +63,13 @@ public class ExpenseMain {
         while (budgeting) {
             System.out.println("\n-------------------------------------------");
             System.out.println("Choose an expense category:");
-            System.out.println(colorText("1. Food", PURPLE));
-            System.out.println(colorText("2. Travel", PURPLE));
-            System.out.println(colorText("3. Education", PURPLE));
-            System.out.println(colorText("4. Entertainment", PURPLE));
-            System.out.println(colorText("5. Rent & Utilities", PURPLE));
-            System.out.println(colorText("6. Miscellaneous", PURPLE));
-            System.out.println(colorText("7. Show summary & exit", PURPLE));
+            System.out.println(colorText("1. Food", BLUE));
+            System.out.println(colorText("2. Travel", BLUE));
+            System.out.println(colorText("3. Education", BLUE));
+            System.out.println(colorText("4. Entertainment", BLUE));
+            System.out.println(colorText("5. Rent & Utilities", BLUE));
+            System.out.println(colorText("6. Miscellaneous", BLUE));
+            System.out.println(colorText("7. Show summary & exit", BLUE));
             System.out.print("\nEnter choice: ");
             int choice = sc.nextInt();
             sc.nextLine();
@@ -91,9 +91,9 @@ public class ExpenseMain {
 
                 case 2 -> {
                     System.out.println("Choose travel mode:" );
-                    System.out.println(colorText("1. Bus (Student discount eligible)", CYAN));
-                    System.out.println(colorText("2. Train (Student discount eligible)", CYAN));
-                    System.out.println(colorText("3. Private Transport (No discounts)", CYAN));
+                    System.out.println(colorText("1. Bus (Student discount eligible)", BLUE));
+                    System.out.println(colorText("2. Train (Student discount eligible)", BLUE));
+                    System.out.println(colorText("3. Private Transport (No discounts)", BLUE));
                     int mode = sc.nextInt(); sc.nextLine();
                     ExpenseUtils.validateChoice(mode, 1, 3);
                     System.out.print("Enter amount (€): ");
@@ -131,10 +131,10 @@ public class ExpenseMain {
 
                 case 3 -> {
                     System.out.println("Choose education item type:");
-                    System.out.println(colorText("1. Books", YELLOW));
-                    System.out.println(colorText("2. Online Course purchase ", YELLOW));
-                    System.out.println(colorText("3. Stationery", YELLOW));
-                    System.out.println(colorText("4. Printouts (only on campus)", YELLOW));
+                    System.out.println(colorText("1. Books", BLUE));
+                    System.out.println(colorText("2. Online Course purchase ", BLUE));
+                    System.out.println(colorText("3. Stationery", BLUE));
+                    System.out.println(colorText("4. Printouts (only on campus)", BLUE));
                     System.out.print("Enter choice: ");
                     int eduChoice = sc.nextInt();
                     sc.nextLine();

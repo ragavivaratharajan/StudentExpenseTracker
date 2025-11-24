@@ -86,7 +86,6 @@ public class ExpenseManager implements Calculatable {
         // Only add after all checks are passed
         expenses.add(expense);
         user.getExpenses().add(expense);
-        System.out.println("Expense added successfully!");
     }
 
 
