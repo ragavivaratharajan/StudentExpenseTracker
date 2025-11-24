@@ -227,7 +227,7 @@ public class ExpenseMain {
                 case 7 -> {
                     budgeting = false;
                     System.out.println("\n-------------------------------------------");
-                    System.out.println("Generating report for " + name + "...");
+                    System.out.println(colorText("Generating report for " + name + "...", RED));
                     ExpenseReport report = manager.generateReport();
                     showSummary(user, manager, report);
                 }
@@ -311,7 +311,7 @@ public class ExpenseMain {
 	        writer.write(cumulativeBuilder.toString());
 	        writer.flush();
 
-	        System.out.println("\nReport saved successfully as " + fileName);
+	        System.out.println(colorText("\nReport saved successfully as " + fileName, GREEN));
 	    } catch (IOException e) {
 	        System.err.println("\nError writing report: " + e.getMessage());
 	    }

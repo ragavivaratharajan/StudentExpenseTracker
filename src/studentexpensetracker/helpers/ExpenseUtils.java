@@ -40,10 +40,6 @@ public final class ExpenseUtils {
     public static String formatCurrency(double amount) {
         return String.format("€%.2f", amount);
     }
-
-    public static boolean isWeekend(LocalDate date) {
-        return date.getDayOfWeek().getValue() >= 6;
-    }
     
     public static void validateChoice(int choice, int min, int max) {
         if (choice < min || choice > max) {
