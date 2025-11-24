@@ -87,13 +87,20 @@ public final class ExpenseUtils {
     public static void printSpendingDistribution(ExpenseManager manager, double total) {
 
         System.out.println("\nSpending Distribution:");
+        
+        // Find the maximum percentage to scale bars properly
+        double maxPercentage = manager.getTotalByCategory().values().stream()
+                .mapToDouble(value -> (value / total) * 100)
+                .max().orElse(100);
+
+        final int MAX_BAR_LENGTH = 40;
 
         manager.getTotalByCategory().forEach((cat, value) -> {
             double percentage = (value / total) * 100;
-            int barLength = (int) (percentage / 2);
+            int barLength = (int) Math.max((percentage / maxPercentage) * MAX_BAR_LENGTH, 2);
             String bar = "\u2588".repeat(barLength);
             
-         // Choose color based on category
+            // Choose color based on category
             String color = switch (cat) {
                 case FOOD -> YELLOW;
                 case TRAVEL -> CYAN;
@@ -128,10 +135,17 @@ public final class ExpenseUtils {
     
     public static void writeSpendingDistribution(FileWriter writer, ExpenseManager manager, double total) throws IOException {
         writer.write("\nSpending Distribution:\n");
+        
+        // Find the maximum percentage to scale bars properly
+        double maxPercentage = manager.getTotalByCategory().values().stream()
+                .mapToDouble(value -> (value / total) * 100)
+                .max().orElse(100);
+
+        final int MAX_BAR_LENGTH = 40;
         manager.getTotalByCategory().forEach((cat, value) -> {
             try {
                 double percentage = (value / total) * 100;
-                int barLength = (int) (percentage / 2);
+                int barLength = (int) Math.max((percentage / maxPercentage) * MAX_BAR_LENGTH, 2);
                 String bar = "\u2588".repeat(barLength);
                 writer.write(String.format("%-20s %6.2f%% | %s%n",
                         cat.name().replace("_", " & "), percentage, bar));
