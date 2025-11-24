@@ -251,6 +251,7 @@ public class ExpenseMain {
 	    printSpendingByCategory(manager);
 	    System.out.println("\nTop Category: " +
 	            report.topCategory().name().replace("_", " & ").toLowerCase());
+	    System.out.println("\nAverage daily spend: " + report.averageDaily());
 	    System.out.println("-------------------------------------------");
 	    printSpendingDistribution(manager, report.totalSpent());
 
