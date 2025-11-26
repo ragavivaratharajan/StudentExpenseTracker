@@ -61,8 +61,9 @@ public class ExpenseManager implements Calculatable {
                 	System.out.println("Budget successfully updated to €" + String.format("%.2f", user.getBudget()));
 
                 	// Save updated budget persistently
-                	Map<String, Double> userData = ExpenseUtils.loadUserData();
-                	userData.put(user.getName(), user.getBudget());
+                	Map<String, String> userData = ExpenseUtils.loadUserData();
+                	String updatedValue = user.getBudget() + "," + java.time.LocalDate.now().getMonth();
+                	userData.put(user.getName(), updatedValue);
                 	ExpenseUtils.saveUserData(userData);
                 	System.out.println("User data updated successfully.");
 
@@ -84,7 +85,7 @@ public class ExpenseManager implements Calculatable {
             }
         }
 
-        // Only add after all checks are passed
+        // Only add the expense after all checks are passed
         expenses.add(expense);
         user.getExpenses().add(expense);
     }

@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 /**
- * 
+ * Main class containing the code for all expense and budgeting operations.
  */
 public class ExpenseMain {
 
@@ -31,25 +31,42 @@ public class ExpenseMain {
         System.out.println(colorText("      Student Expense Tracker App", BLUE));
         System.out.println("===========================================");
         
-        Map<String, Double> userData = ExpenseUtils.loadUserData();
-       
+        Map<String, String> userData = ExpenseUtils.loadUserData();
+               
         System.out.print("Enter your name: ");
         String name = sc.nextLine();
         
         double budget;
         
+        String currentMonth = LocalDate.now().getMonth().toString();
+        String savedMonth = null;
+        
         // If user already exists, fetch existing budget.
         if (userData.containsKey(name)) {
-            budget = userData.get(name);
-            System.out.println(colorText("Welcome back, " + name + "! Your saved monthly budget is €" + budget, PURPLE));
+        	String[] parts = userData.get(name).split(",");
+        	budget = Double.parseDouble(parts[0]);
+        	savedMonth = (parts.length > 1) ? parts[1] : currentMonth;
+        	
+        	// If a new month is detected, start with a new budget for that month.
+        	if (!savedMonth.equalsIgnoreCase(currentMonth)) {
+            	System.out.println(colorText("New month detected (" + currentMonth + "). Please enter a new budget.", YELLOW));
+            	System.out.print("Enter your monthly budget (€): ");
+            	budget = sc.nextDouble();
+            	sc.nextLine();
+            	ExpenseUtils.updateUserData(name, budget, currentMonth);
+            	
+                ExpenseUtils.resetCumulativeTotal(name);
+            } else {
+            	System.out.println(colorText("Welcome back, " + name + "! Your saved budget for " + currentMonth + " is €" + budget, PURPLE));
+            }
+
         // For new users, input the budget and save the user data to a text file
         } else {
             System.out.print("Enter your monthly budget (€): ");
             budget = sc.nextDouble();
             sc.nextLine();
-            userData.put(name, budget);
-            ExpenseUtils.saveUserData(userData);
-            System.out.println(colorText("User saved successfully!", GREEN));
+            ExpenseUtils.updateUserData(name, budget, currentMonth);
+        	System.out.println(colorText("User saved successfully!", GREEN));
         }
         
         User user = new User(name, budget);
@@ -239,6 +256,8 @@ public class ExpenseMain {
         sc.close();
     }
 	
+	
+	// Method to show the summary of expenses and write expense summary and details to the expense report.
 	private static void showSummary(User user, ExpenseManager manager, ExpenseReport report) {
 	    System.out.println("\n===========================================");
 	    System.out.println(colorText("             Expense Summary", MAGENTA));

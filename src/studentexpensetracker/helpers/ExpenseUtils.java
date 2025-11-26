@@ -47,14 +47,20 @@ public final class ExpenseUtils {
         }
     }
     
-    public static Map<String, Double> loadUserData() {
-        Map<String, Double> userData = new HashMap<>();
+    public static Map<String, String> loadUserData() {
+        Map<String, String> userData = new HashMap<>();
         try (BufferedReader reader = new BufferedReader(new FileReader("UserData.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts.length == 2) {
-                    userData.put(parts[0].trim(), Double.parseDouble(parts[1].trim()));
+                if (parts.length >= 2) {
+                	// name,budget,month
+                    String name = parts[0].trim();
+                    String budget = parts[1].trim();
+                    String month = (parts.length == 3) ? parts[2].trim() : java.time.LocalDate.now().getMonth().toString();
+
+                    // Store combined value (budget + month)
+                    userData.put(name, budget + "," + month);                    
                 }
             }
         } catch (IOException e) {
@@ -62,15 +68,21 @@ public final class ExpenseUtils {
         return userData;
     }
     
-    public static void saveUserData(Map<String, Double> userData) {
+    public static void saveUserData(Map<String, String> userData) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("UserData.txt"))) {
-            for (Map.Entry<String, Double> entry : userData.entrySet()) {
+            for (Map.Entry<String, String> entry : userData.entrySet()) {
                 writer.write(entry.getKey() + "," + entry.getValue());
                 writer.newLine();
             }
         } catch (IOException e) {
             System.err.println("Error saving user data: " + e.getMessage());
         }
+    }
+    
+    public static void updateUserData(String name, double budget, String month) {
+    	Map<String, String> userData = loadUserData();
+    	userData.put(name, budget + "," + month);
+    	saveUserData(userData);
     }
     
     public static void printSpendingByCategory(ExpenseManager manager) {
@@ -171,6 +183,26 @@ public final class ExpenseUtils {
             System.err.println("Error reading report file: " + e.getMessage());
         }
         return lastTotal;
+    }
+    
+    public static void resetCumulativeTotal(String userName) {
+        String reportFile = userName + "_ExpenseReport.txt";
+        File file = new File(reportFile);
+
+        if (file.exists()) {
+            File backup = new File(userName + "_ExpenseReport_" + java.time.LocalDate.now().minusMonths(1).getMonth() + "_ARCHIVE.txt");
+            file.renameTo(backup);
+        }
+
+        // Start a fresh report file for the new month
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            writer.write("=== Monthly Expense Report for " + java.time.LocalDate.now().getMonth() +
+                         " " + java.time.LocalDate.now().getYear() + " ===\n");
+        } catch (IOException e) {
+            System.err.println("Error resetting monthly report for " + userName + ": " + e.getMessage());
+        }
+
+        System.out.println(colorText("Starting fresh tracking for " + java.time.LocalDate.now().getMonth() + ".", GREEN));
     }
     
     public static String colorText(String text, String color) {

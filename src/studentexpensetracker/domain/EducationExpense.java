@@ -36,7 +36,8 @@ public final class EducationExpense extends Expense {
 	public String getLabel() {
 		return "EDUCATION";
 	}
-
+    
+	// Calculate the amout for printouts. For b&w 6 cents and color costs 10 cents
 	@Override
     public double calculateExpense() {
 		if (itemType.equalsIgnoreCase("printouts")) {
