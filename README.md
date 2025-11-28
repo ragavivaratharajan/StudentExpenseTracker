@@ -29,7 +29,7 @@ UML Diagram:
 ---
 
 ## Tech Stack
-- **Language:** Java 21 
+- **Language:** Java 22 
 - **IDE:** Eclipse IDE  
 - **Version Control:** Git & GitHub  
 - **Libraries:** Java Standard Library only  
