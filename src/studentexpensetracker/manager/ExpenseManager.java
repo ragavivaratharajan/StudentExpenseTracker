@@ -75,7 +75,8 @@ public class ExpenseManager implements Calculatable {
                         throw new BudgetExceededException("Even after increase, budget still exceeded by €"
                                 + String.format("%.2f", projectedTotal - user.getBudget()));
                     }
-                } catch (InputMismatchException e) {
+                // Unnamed variable
+                } catch (InputMismatchException _) {
                     sc.nextLine();
                     throw new BudgetExceededException("Invalid input for budget increase.");
                 }

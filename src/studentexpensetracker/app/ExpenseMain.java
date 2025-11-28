@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 /**
- * Main class containing the code for all expense and budgeting operations.
+ * Main class containing the code for all expense and budgeting operations, report generation.
  */
 public class ExpenseMain {
 
@@ -76,7 +76,7 @@ public class ExpenseMain {
         
         boolean budgeting = true;
         
-        // Menu display for different expense cattegories and summary
+        // Menu display for different expense categories and summary
         while (budgeting) {
             System.out.println("\n-------------------------------------------");
             System.out.println("Choose an expense category:");
@@ -255,7 +255,6 @@ public class ExpenseMain {
         
         sc.close();
     }
-	
 	
 	// Method to show the summary of expenses and write expense summary and details to the expense report.
 	private static void showSummary(User user, ExpenseManager manager, ExpenseReport report) {

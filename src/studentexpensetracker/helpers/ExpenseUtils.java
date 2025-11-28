@@ -18,7 +18,7 @@ import studentexpensetracker.exceptions.InvalidChoiceException;
 import studentexpensetracker.manager.ExpenseManager;
 
 /**
- * Utility helper class for formatting and date operations.
+ * Utility helper class for formatting and date, repititive printing and writing operations.
  */
 public final class ExpenseUtils {
 	
@@ -176,7 +176,8 @@ public final class ExpenseUtils {
                     String value = line.replace("Cumulative Total (All Sessions): €", "").trim();
                     try {
                         lastTotal = Double.parseDouble(value);
-                    } catch (NumberFormatException ignored) {}
+                    // Unnamed variable
+                    } catch (NumberFormatException _) {}
                 }
             }
         } catch (IOException e) {
