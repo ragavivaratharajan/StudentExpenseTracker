@@ -8,6 +8,7 @@ import static studentexpensetracker.helpers.ExpenseUtils.*;
 /**
  * Represents entertainment related expenses like movies or streaming subscriptions, concerts, events etc.
  */
+//@Inheritance: subclass extends the sealed Expense base class
 public final class EntertainmentExpense extends Expense{
 	
 	private String type;
@@ -16,12 +17,14 @@ public final class EntertainmentExpense extends Expense{
         super(amount, ExpenseCategory.ENTERTAINMENT, "Entertainment Expense Type: " + type);
         this.type = type;
     }
-
+	
+	// @Method overriding: Different expense types return different labels.
 	@Override
     public String getLabel() {
         return "ENTERTAINMENT";
     }
 
+	// @Method overriding: each expense type calculates differently.
     @Override
     public double calculateExpense() {
         double cost = getAmount();
@@ -34,12 +37,13 @@ public final class EntertainmentExpense extends Expense{
         return cost;
     }
 
+    // @Method overriding: Different methods process expense details differently.
     @Override
     public String getExpenseDetails() {
         return "Entertainment (" + type + "): " + formatCurrency(calculateExpense());
     }
 
-    @Override
+    // @Method overriding: Recurring payments are based on expense types.
     public Boolean isRecurring() {
         // Streaming subscriptions could be recurring
         return type.equalsIgnoreCase("subscription");

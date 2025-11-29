@@ -23,14 +23,18 @@ import studentexpensetracker.helpers.ExpenseUtils;
 /**
  * Handles management and operations on expenses.
  */
+
+// @Implements interface Calculatable
 public class ExpenseManager implements Calculatable {
 	
     private List<Expense> expenses;
     
     public ExpenseManager() {
+    	// @ArrayList: to store dynamic data
         this.expenses = new ArrayList<>();
     }
     
+    // @call-by-value: copy of reference user
     public void addExpense(User user, Expense expense, Scanner sc) throws BudgetExceededException {
         // Calculate what the total would be if we add this expense
         double previousCumulativeTotal = ExpenseUtils.getLastCumulativeTotal(user.getName());
@@ -75,7 +79,7 @@ public class ExpenseManager implements Calculatable {
                         throw new BudgetExceededException("Even after increase, budget still exceeded by €"
                                 + String.format("%.2f", projectedTotal - user.getBudget()));
                     }
-                // Unnamed variable
+                // @JAVA 22 FEATURE: Unnamed variable
                 } catch (InputMismatchException _) {
                     sc.nextLine();
                     throw new BudgetExceededException("Invalid input for budget increase.");
@@ -97,12 +101,14 @@ public class ExpenseManager implements Calculatable {
         return new ArrayList<>(expenses);
     }
     
+    // @Lambda expression + Predicate used for filtering expenses
     public List<Expense> filterExpenses(Predicate<Expense> condition) {
         return expenses.stream().filter(condition).toList();
     }
 
 	@Override
 	public double calculateTotal() {
+		// @Method reference (Expense::calculateExpense)
         return expenses.stream().mapToDouble(Expense::calculateExpense).sum();
 	}
 	
@@ -129,6 +135,7 @@ public class ExpenseManager implements Calculatable {
         if (expenses.isEmpty()) {
             System.out.println("No expenses recorded yet.");
         } else {
+        	// @lambda: used to print each expense in the expenses list
             expenses.forEach(e -> System.out.println("• " + e.getExpenseDetails()));
         }
     }

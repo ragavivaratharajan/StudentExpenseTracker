@@ -8,6 +8,7 @@ import static studentexpensetracker.helpers.ExpenseUtils.*;
 /**
  * Represents the train fare based on the type of journey and discount if applicable.
  */
+//@Inheritance: subclass extends the sealed TravelExpense base class
 public final class TrainExpense extends TravelExpense {
 
 	private String isLongJourney;
@@ -19,6 +20,7 @@ public final class TrainExpense extends TravelExpense {
         this.hasStudentDiscountCard = hasStudentDiscountCard;
     }
     
+	// @Method overriding: each expense type calculates differently.
     @Override
     public double calculateExpense() {
         double total = getAmount();
@@ -27,6 +29,7 @@ public final class TrainExpense extends TravelExpense {
         return total;
     }
     
+    // @Method overriding: Different methods process expense details differently.
     @Override
     public String getExpenseDetails() {
         String journeyType = isLongJourney.trim().toLowerCase().matches("yes|y") ? "Long journey (+10%)" : "Short journey";
@@ -37,11 +40,13 @@ public final class TrainExpense extends TravelExpense {
         }
     }
     
+	// @Method overriding: Different expense types return different labels.
     @Override
     public String getLabel() {
         return "TRAIN";
     }
     
+	// @Method overriding: Recuuring is different for different expense types.
     @Override
     public Boolean isRecurring() {
         return false;

@@ -37,7 +37,8 @@ public class ExpenseMain {
         String name = sc.nextLine();
         
         double budget;
-        
+       
+        // @Date Time API: Using (LocalDate, Month)
         String currentMonth = LocalDate.now().getMonth().toString();
         String savedMonth = null;
         
@@ -90,7 +91,8 @@ public class ExpenseMain {
             System.out.print("\nEnter choice: ");
             int choice = sc.nextInt();
             sc.nextLine();
-
+            
+            // Modern switch: For implementation of different expense categories.
             switch (choice) {
                 case 1 -> {
                     System.out.print("Enter amount (€): ");
@@ -278,7 +280,8 @@ public class ExpenseMain {
 	    boolean fileExistsAndHasData = file.exists() && file.length() > 0;
 
 	    try (FileWriter writer = new FileWriter(fileName, true)) {
-
+	    	
+	    	// @StringBuilder: used for efficient concatenations to the reports.
 	        StringBuilder reportBuilder = new StringBuilder();
 
 	        // Report Header

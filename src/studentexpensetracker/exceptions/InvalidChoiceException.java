@@ -6,6 +6,7 @@ package studentexpensetracker.exceptions;
 /**
  * 
  */
+// @UncheckedException: Used for validation failures.
 public class InvalidChoiceException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 

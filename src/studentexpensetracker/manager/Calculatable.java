@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 /**
  * Defines common calculation behavior that could be used for expense related operations.
  */
+//@Interface with abstract, default, private, and static methods.
 public interface Calculatable {
 	
 	double calculateTotal();

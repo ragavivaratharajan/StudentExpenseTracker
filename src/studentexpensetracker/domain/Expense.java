@@ -13,9 +13,11 @@ import studentexpensetracker.exceptions.InvalidExpenseException;
 /**
  * Base class for all the Expense categories.
  */
+// @Sealed class: restricts which subclasses can extend this class 
 public sealed abstract class Expense permits EducationExpense, EntertainmentExpense, FoodExpense,
         RentAndUtilityExpense, TravelExpense, MiscellaneousExpense {
 	
+	// @Encapsulation: private fields with public getter methods.
 	private static int counter = 0;
 	private final int id;
 	private final double amount;
@@ -41,6 +43,7 @@ public sealed abstract class Expense permits EducationExpense, EntertainmentExpe
 		this.description = description;	
 	}
 	
+	// @abstract methods: implemented in sub classes
 	public abstract String getLabel();
 	
 	public abstract double calculateExpense();

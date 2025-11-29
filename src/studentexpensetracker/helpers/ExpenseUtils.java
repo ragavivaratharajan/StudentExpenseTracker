@@ -80,7 +80,8 @@ public final class ExpenseUtils {
     }
     
     public static void updateUserData(String name, double budget, String month) {
-    	Map<String, String> userData = loadUserData();
+    	// @LVTI: compiler determines the type automatically
+    	var userData = loadUserData();
     	userData.put(name, budget + "," + month);
     	saveUserData(userData);
     }

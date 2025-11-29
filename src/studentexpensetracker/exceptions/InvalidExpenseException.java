@@ -6,6 +6,7 @@ package studentexpensetracker.exceptions;
 /**
  * Custom checked exception which is thrown when an invalid expense is seen.
  */
+//@UncheckedException: Used for validation failures.
 public class InvalidExpenseException extends RuntimeException {
 	
 	private static final long serialVersionUID = 1L;
