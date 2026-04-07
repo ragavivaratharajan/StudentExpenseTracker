@@ -194,24 +194,31 @@ public final class ExpenseUtils {
     }
     
     public static double getLastCumulativeTotal(String userName) {
+
         String fileName = userName + "_ExpenseReport.txt";
         File file = new File(fileName);
-        if (!file.exists() || file.length() == 0) return 0.0;
 
+        if (!file.exists()) return 0.0;
         double lastTotal = 0.0;
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+
+        try (BufferedReader reader =
+                 new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                if (line.startsWith("Cumulative Total (All Sessions): €")) {
-                    String value = line.replace("Cumulative Total (All Sessions): €", "").trim();
+                if (line.startsWith("Cumulative Total (All Sessions):")) {
+                    String value =
+                            line.replaceAll("[^0-9.]", "");
                     try {
                         lastTotal = Double.parseDouble(value);
-                    // Unnamed variable
-                    } catch (NumberFormatException _) {}
+                    }
+                    catch (NumberFormatException _) {}
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error reading report file: " + e.getMessage());
+            System.err.println(
+                "Error reading cumulative total: "
+                + e.getMessage()
+            );
         }
         return lastTotal;
     }

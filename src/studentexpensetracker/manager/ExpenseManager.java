@@ -38,7 +38,7 @@ public class ExpenseManager implements Calculatable {
     // @call-by-value: copy of reference user
     public void addExpense(Expense expense, Scanner sc) throws BudgetExceededException {
         // Calculate what the total would be if we add this expense
-        double previousCumulativeTotal = ExpenseUtils.getLastCumulativeTotal(ExpenseMain.CURRENT_USER.get().getName());
+    	double previousCumulativeTotal = ExpenseUtils.getLastCumulativeTotal(ExpenseMain.CURRENT_USER.get().getName());
         double projectedTotal = previousCumulativeTotal 
                               + ExpenseMain.CURRENT_USER.get().calculateTotal() 
                               + expense.calculateExpense();
