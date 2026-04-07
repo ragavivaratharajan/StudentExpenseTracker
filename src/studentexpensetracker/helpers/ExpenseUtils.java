@@ -37,9 +37,33 @@ public final class ExpenseUtils {
         return date.format(DateTimeFormatter.ofPattern("dd MMM yyyy"));
     }
 
-    public static String formatCurrency(double amount) {
-        return String.format("€%.2f", amount);
-    }
+	public static String formatCurrency(double amount) {
+
+	    java.util.Locale locale = getUserLocale();
+
+	    java.text.NumberFormat currencyFormatter =
+	            java.text.NumberFormat.getCurrencyInstance(locale);
+
+	    return currencyFormatter.format(amount);
+	}
+	
+	public static java.util.Locale getUserLocale() {
+
+	    String country = System.getProperty("user.country");
+
+	    return switch (country) {
+
+	        case "IE" -> java.util.Locale.forLanguageTag("en-IE");
+
+	        case "GB" -> java.util.Locale.UK;
+
+	        case "US" -> java.util.Locale.US;
+	        
+	        case "IN" -> java.util.Locale.forLanguageTag("en-IN");
+
+	        default -> java.util.Locale.getDefault();
+	    };
+	}
     
     public static void validateChoice(int choice, int min, int max) {
         if (choice < min || choice > max) {

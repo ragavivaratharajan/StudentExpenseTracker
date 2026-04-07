@@ -26,12 +26,23 @@ public class User {
     // @Method overloading: same method name (constructor) with different parameters.
     public User(String name) {
     	// @this(): calling another constructor User(name, budget)
+    	if (name == null || name.isBlank()) {
+            throw new InvalidExpenseException("User name cannot be empty.");
+        }
+
+        System.out.println("Creating user profile for: " + name);
+
         this(name, 0.0);
     }
 
     // Constructor with budget
     public User(String name, double budget) {
-    	// @this.: refers to the current object's fields
+    	if (budget < 0) {
+            throw new InvalidExpenseException("Budget cannot be negative.");
+        }
+
+        System.out.println("Initializing budget: €" + budget);
+
         this.name = name;
         this.budget = budget;
         this.expenses = new ArrayList<>();

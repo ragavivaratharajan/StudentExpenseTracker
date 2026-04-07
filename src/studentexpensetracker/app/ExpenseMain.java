@@ -24,7 +24,7 @@ public class ExpenseMain {
 	 * @param args
 	 */
 	// Instance main
-	void main() {
+	public void run() {
         ExpenseManager manager = new ExpenseManager();
         Scanner sc = new Scanner(System.in);
         

@@ -121,15 +121,46 @@ public class ExpenseManager implements Calculatable {
 	}
 	
 	public ExpenseReport generateReport() {
-        var total = calculateTotal();
-        Map<ExpenseCategory, Double> grouped = getTotalByCategory();
-        ExpenseCategory topCategory = grouped.entrySet().stream()
-                .max(Map.Entry.comparingByValue())
-                .map(Map.Entry::getKey)
-                .orElse(null);
 
-        return new ExpenseReport(Month.from(LocalDate.now()), total, topCategory);
-    }
+	    java.util.concurrent.ExecutorService executor =
+	            java.util.concurrent.Executors.newFixedThreadPool(2);
+
+	    try {
+
+	        java.util.concurrent.Callable<Double> totalTask =
+	                this::calculateTotal;
+
+	        java.util.concurrent.Callable<ExpenseCategory> topCategoryTask =
+	                () -> getTotalByCategory().entrySet().stream()
+	                        .max(Map.Entry.comparingByValue())
+	                        .map(Map.Entry::getKey)
+	                        .orElse(null);
+
+	        java.util.concurrent.Future<Double> totalFuture =
+	                executor.submit(totalTask);
+
+	        java.util.concurrent.Future<ExpenseCategory> categoryFuture =
+	                executor.submit(topCategoryTask);
+
+	        double total = totalFuture.get();
+
+	        ExpenseCategory topCategory = categoryFuture.get();
+
+	        return new ExpenseReport(
+	                Month.from(LocalDate.now()),
+	                total,
+	                topCategory
+	        );
+
+	    } catch (Exception e) {
+
+	        throw new RuntimeException("Error generating report concurrently", e);
+
+	    } finally {
+
+	        executor.shutdown();
+	    }
+	}
 	
 	public void displayAll() {
         if (expenses.isEmpty()) {
