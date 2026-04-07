@@ -136,7 +136,78 @@ public class ExpenseManager implements Calculatable {
             System.out.println("No expenses recorded yet.");
         } else {
         	// @lambda: used to print each expense in the expenses list
-            expenses.forEach(e -> System.out.println("• " + e.getExpenseDetails()));
+        	java.util.function.Consumer<Expense> printer =
+        	        exp -> System.out.println("• " + exp.getExpenseDetails());
+
+        	expenses.forEach(printer);
         }
     }
+	
+	public List<Expense> getExpensesSortedByAmount() {
+	    return expenses.stream()
+	            .sorted(java.util.Comparator.comparing(Expense::calculateExpense))
+	            .toList();
+	}
+	
+	public Map<Boolean, List<Expense>> partitionRecurringExpenses() {
+	    return expenses.stream()
+	            .collect(Collectors.partitioningBy(Expense::isRecurring));
+	}
+	
+	public List<Expense> getTopThreeExpenses() {
+	    return expenses.stream()
+	            .sorted(java.util.Comparator.comparing(Expense::calculateExpense).reversed())
+	            .limit(Math.min(3, expenses.size()))
+	            .toList();
+	}
+	
+	public List<ExpenseCategory> getDistinctCategoriesUsed() {
+	    return expenses.stream()
+	            .map(Expense::getCategory)
+	            .distinct()
+	            .sorted()
+	            .toList();
+	}
+	
+	public void showExpenseAnalytics() {
+
+	    System.out.println("\nExpense Analytics:");
+
+	    expenses.stream()
+	            .min(java.util.Comparator.comparing(Expense::calculateExpense))
+	            .ifPresent(e -> System.out.println("Cheapest expense: " + e.getExpenseDetails()));
+
+	    expenses.stream()
+	            .max(java.util.Comparator.comparing(Expense::calculateExpense))
+	            .ifPresent(e -> System.out.println("Most expensive expense: " + e.getExpenseDetails()));
+
+	    long count = expenses.stream().count();
+	    System.out.println("Total number of expenses: " + count);
+
+	    expenses.stream()
+	            .findFirst()
+	            .ifPresent(e -> System.out.println("First expense entered: " + e.getExpenseDetails()));
+
+	    boolean hasRecurring = expenses.stream()
+	            .anyMatch(Expense::isRecurring);
+
+	    System.out.println("Contains recurring expenses? " + hasRecurring);
+
+	    boolean noneRecurring = expenses.stream()
+	            .noneMatch(Expense::isRecurring);
+
+	    System.out.println("No recurring expenses present? " + noneRecurring);
+	    
+	    expenses.stream()
+        .filter(Expense::isRecurring)
+        .findAny()
+        .ifPresent(exp -> System.out.println(
+                "Example recurring expense found: " + exp.getExpenseDetails()
+        ));
+	    
+	    boolean allPositive = expenses.stream()
+	            .allMatch(e -> e.calculateExpense() > 0);
+
+	    System.out.println("All expenses are positive? " + allPositive);
+	}
 }

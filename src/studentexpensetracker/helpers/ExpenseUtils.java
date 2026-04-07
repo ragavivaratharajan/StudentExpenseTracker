@@ -48,24 +48,24 @@ public final class ExpenseUtils {
     }
     
     public static Map<String, String> loadUserData() {
-        Map<String, String> userData = new HashMap<>();
         try (BufferedReader reader = new BufferedReader(new FileReader("UserData.txt"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length >= 2) {
-                	// name,budget,month
-                    String name = parts[0].trim();
-                    String budget = parts[1].trim();
-                    String month = (parts.length == 3) ? parts[2].trim() : java.time.LocalDate.now().getMonth().toString();
+            return reader.lines()
+                    .map(line -> line.split(","))
+                    .filter(parts -> parts.length >= 2)
+                    .collect(java.util.stream.Collectors.toMap(
+                            parts -> parts[0].trim(),
+                            parts -> {
+                                String budget = parts[1].trim();
+                                String month = (parts.length == 3)
+                                        ? parts[2].trim()
+                                        : java.time.LocalDate.now().getMonth().toString();
+                                return budget + "," + month;
+                            }
+                    ));
 
-                    // Store combined value (budget + month)
-                    userData.put(name, budget + "," + month);                    
-                }
-            }
         } catch (IOException e) {
+            return new HashMap<>();
         }
-        return userData;
     }
     
     public static void saveUserData(Map<String, String> userData) {
@@ -88,9 +88,14 @@ public final class ExpenseUtils {
     
     public static void printSpendingByCategory(ExpenseManager manager) {
         System.out.println("\nSpending by Category:");
-        manager.getTotalByCategory().forEach((cat, total) ->
-            System.out.println("- " + cat.name().replace("_", " & ") + ": " + formatCurrency(total))
-        );
+        java.util.function.Function<Map.Entry<?, Double>, String> formatter =
+                entry -> "- " + entry.getKey().toString().replace("_", " & ")
+                        + ": " + formatCurrency(entry.getValue());
+
+        manager.getTotalByCategory().entrySet()
+                .stream()
+                .map(formatter)
+                .forEach(System.out::println);
     }
     
     public static void printSpendingDistribution(ExpenseManager manager, double total) {

@@ -23,7 +23,8 @@ public class ExpenseMain {
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	// Instance main
+	void main() {
         ExpenseManager manager = new ExpenseManager();
         Scanner sc = new Scanner(System.in);
         
@@ -51,8 +52,16 @@ public class ExpenseMain {
         	// If a new month is detected, start with a new budget for that month.
         	if (!savedMonth.equalsIgnoreCase(currentMonth)) {
             	System.out.println(colorText("New month detected (" + currentMonth + "). Please enter a new budget.", YELLOW));
-            	System.out.print("Enter your monthly budget (€): ");
+            	java.util.function.Supplier<Double> suggestedBudget =
+            	        () -> 500.0;
+
+            	System.out.print("Enter your monthly budget (€) or 0 for suggestion: ");
             	budget = sc.nextDouble();
+
+            	if (budget == 0) {
+            	    budget = suggestedBudget.get();
+            	    System.out.println("Suggested student budget applied: €" + budget);
+            	}
             	sc.nextLine();
             	ExpenseUtils.updateUserData(name, budget, currentMonth);
             	
@@ -80,7 +89,7 @@ public class ExpenseMain {
         // Menu display for different expense categories and summary
         while (budgeting) {
             System.out.println("\n-------------------------------------------");
-            System.out.println("Choose an expense category:");
+            System.out.println("Choose an expense category or other any other actions listed:");
             System.out.println(colorText("1. Food", BLUE));
             System.out.println(colorText("2. Travel", BLUE));
             System.out.println(colorText("3. Education", BLUE));
@@ -88,6 +97,10 @@ public class ExpenseMain {
             System.out.println(colorText("5. Rent & Utilities", BLUE));
             System.out.println(colorText("6. Miscellaneous", BLUE));
             System.out.println(colorText("7. Show summary & exit", BLUE));
+            System.out.println(colorText("8. Show top 3 highest expenses", BLUE));
+            System.out.println(colorText("9. Show categories used in this session", BLUE));
+            System.out.println(colorText("10. Expense analytics", BLUE));
+            
             System.out.print("\nEnter choice: ");
             int choice = sc.nextInt();
             sc.nextLine();
@@ -251,7 +264,25 @@ public class ExpenseMain {
                     showSummary(user, manager, report);
                 }
 
-                default -> ExpenseUtils.validateChoice(choice, 1, 7);
+                case 8 -> {
+                    System.out.println("\nTop 3 Highest Expenses:");
+
+                    manager.getTopThreeExpenses()
+                           .forEach(exp -> System.out.println(exp.getExpenseDetails()));
+                }
+                
+                case 9 -> {
+                    System.out.println("\nCategories used in this session:");
+
+                    manager.getDistinctCategoriesUsed()
+                           .forEach(cat -> System.out.println(cat));
+                }
+                
+                case 10 -> {
+                    manager.showExpenseAnalytics();
+                }
+                
+                default -> ExpenseUtils.validateChoice(choice, 1, 10);
             }
         }
         
@@ -316,6 +347,30 @@ public class ExpenseMain {
 	        
 	        // Write main summary
 	        writer.write(reportBuilder.toString());
+	        
+	        // Write detailed list of all expenses
+	        writer.write("\n--- Expense Details ---\n");
+
+	        for (Expense exp : manager.getAllExpenses()) {
+	            writer.write(exp.getExpenseDetails() + "\n");
+	        }
+	        
+	        // Sorted Expenses
+	        System.out.println("\nSorted Expenses (Lowest → Highest):");
+
+	        manager.getExpensesSortedByAmount()
+	               .forEach(exp -> System.out.println(exp.getExpenseDetails()));
+	        
+	        // Partitioning by Recurring Vs Non Recurring expenses
+	        var partitioned = manager.partitionRecurringExpenses();
+
+	        System.out.println("\nRecurring Expenses:");
+	        partitioned.get(true)
+	                   .forEach(exp -> System.out.println(exp.getExpenseDetails()));
+
+	        System.out.println("\nOne-time Expenses:");
+	        partitioned.get(false)
+	                   .forEach(exp -> System.out.println(exp.getExpenseDetails()));
 
 	        // Category and distribution
 	        writeSpendingByCategory(writer, manager);
