@@ -1,6 +1,6 @@
 # Student Expense Tracker
 
-A **Java console-based application** to help students efficiently track, categorize, and analyze their expenses while maintaining a personal monthly budget.
+A **Java console-based application** to help students efficiently track, categorize, and analyze their expenses while maintaining a personal monthly budget by generating expense reports.
 
 ---
 
@@ -24,12 +24,12 @@ A **Java console-based application** to help students efficiently track, categor
 - **Custom Exceptions:** `InvalidExpenseException`, `BudgetExceededException`  
 
 UML Diagram:
-<img width="3495" height="1119" alt="image" src="https://github.com/user-attachments/assets/8870d4ff-882b-498c-a2b9-6fe6496ebdfd" />
+<img width="960" height="409" alt="image" src="https://github.com/user-attachments/assets/577eb615-3952-4f7f-ab2b-dcb88731106f" />
 
 ---
 
 ## Tech Stack
-- **Language:** Java 22 
+- **Language:** Java 21 and features of Java 22 
 - **IDE:** Eclipse IDE  
 - **Version Control:** Git & GitHub  
 - **Libraries:** Java Standard Library only  
