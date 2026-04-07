@@ -19,6 +19,8 @@ import java.util.Scanner;
  * Main class containing the code for all expense and budgeting operations, report generation.
  */
 public class ExpenseMain {
+	
+	public static final ScopedValue<User> CURRENT_USER = ScopedValue.newInstance();
 
 	/**
 	 * @param args
@@ -84,7 +86,9 @@ public class ExpenseMain {
         // Set the budget month
         user.setBudgetMonth(java.time.LocalDate.now().getMonth());
         
-        boolean budgeting = true;
+        ScopedValue.where(CURRENT_USER, user).run(() -> {
+
+            boolean budgeting = true;
         
         // Menu display for different expense categories and summary
         while (budgeting) {
@@ -114,7 +118,7 @@ public class ExpenseMain {
                     String mealType = sc.nextLine();
                     
                     try {
-                        manager.addExpense(user, new FoodExpense(amt, mealType), sc);
+                        manager.addExpense(new FoodExpense(amt, mealType), sc);
                         System.out.println(colorText("Food expense added!", GREEN));
                     } catch (BudgetExceededException e) {
                         System.err.println(e.getMessage());
@@ -136,7 +140,7 @@ public class ExpenseMain {
                         
                         if (mode == 1)
                         	try {
-                                manager.addExpense(user, new BusExpense(amt, hasCard), sc);
+                                manager.addExpense(new BusExpense(amt, hasCard), sc);
                             } catch (BudgetExceededException e) {
                                 System.err.println(e.getMessage());
                             }  
@@ -145,7 +149,7 @@ public class ExpenseMain {
                         	System.out.println("Is it a long journey? Surcharges might apply for long journeys (yes/no): ");
                         	String islongjourney = sc.next(); sc.nextLine();
                         	try {
-                                manager.addExpense(user, new TrainExpense(amt, islongjourney, hasCard), sc); 	
+                                manager.addExpense(new TrainExpense(amt, islongjourney, hasCard), sc); 	
                             } catch (BudgetExceededException e) {
                                 System.err.println(e.getMessage());
                             }   
@@ -154,7 +158,7 @@ public class ExpenseMain {
                     
                     else
                     	try {
-                        	manager.addExpense(user, new TravelExpense(amt, "Private Transport"), sc);
+                        	manager.addExpense(new TravelExpense(amt, "Private Transport"), sc);
                         } catch (BudgetExceededException e) {
                             System.err.println(e.getMessage());
                         }   
@@ -181,7 +185,7 @@ public class ExpenseMain {
                                     : "Stationery";
                             
                             try {
-                            	manager.addExpense(user, new EducationExpense(amt, type), sc);
+                            	manager.addExpense(new EducationExpense(amt, type), sc);
                             	System.out.println(colorText("Education expense added!", GREEN));
                             } catch (BudgetExceededException e) {
                                 System.err.println(e.getMessage());
@@ -196,7 +200,7 @@ public class ExpenseMain {
                             sc.nextLine();
                             
                             try {
-                            	manager.addExpense(user, new EducationExpense("Printouts", bw, color), sc);
+                            	manager.addExpense(new EducationExpense("Printouts", bw, color), sc);
                             	System.out.println(colorText("Printout expense added!", GREEN));
                             } catch (BudgetExceededException e) {
                                 System.err.println(e.getMessage());
@@ -215,7 +219,7 @@ public class ExpenseMain {
                     String act = sc.nextLine();
                     
                     try {
-                        manager.addExpense(user, new EntertainmentExpense(amt, act), sc);
+                        manager.addExpense(new EntertainmentExpense(amt, act), sc);
                         System.out.println(colorText("Entertainment expense added!", GREEN));
                     } catch (BudgetExceededException e) {
                         System.err.println(e.getMessage());
@@ -233,7 +237,7 @@ public class ExpenseMain {
                     boolean recurring = sc.nextBoolean(); sc.nextLine();
                     
                     try {
-                    	manager.addExpense(user, new RentAndUtilityExpense(amt, type, dueDate, recurring), sc);
+                    	manager.addExpense(new RentAndUtilityExpense(amt, type, dueDate, recurring), sc);
                         System.out.println(colorText("Rent/Utility expense added!", GREEN));
                     } catch (BudgetExceededException e) {
                         System.err.println(e.getMessage());
@@ -249,7 +253,7 @@ public class ExpenseMain {
                     String desc = sc.nextLine();
                     
                     try {
-                        manager.addExpense(user, new MiscellaneousExpense(amt, type, desc), sc);
+                        manager.addExpense(new MiscellaneousExpense(amt, type, desc), sc);
                         System.out.println(colorText("Miscellaneous expense added!", GREEN));
                     } catch (BudgetExceededException e) {
                         System.err.println(e.getMessage());
@@ -267,7 +271,7 @@ public class ExpenseMain {
                 case 8 -> {
                     System.out.println("\nTop 3 Highest Expenses:");
 
-                    manager.getTopThreeExpenses()
+                    manager.getTopExpenses(3)
                            .forEach(exp -> System.out.println(exp.getExpenseDetails()));
                 }
                 
@@ -285,6 +289,7 @@ public class ExpenseMain {
                 default -> ExpenseUtils.validateChoice(choice, 1, 10);
             }
         }
+     });
         
         sc.close();
     }

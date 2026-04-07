@@ -13,10 +13,11 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Gatherers;
 
+import studentexpensetracker.app.ExpenseMain;
 import studentexpensetracker.domain.Expense;
 import studentexpensetracker.domain.ExpenseCategory;
-import studentexpensetracker.domain.User;
 import studentexpensetracker.exceptions.BudgetExceededException;
 import studentexpensetracker.helpers.ExpenseUtils;
 
@@ -35,20 +36,20 @@ public class ExpenseManager implements Calculatable {
     }
     
     // @call-by-value: copy of reference user
-    public void addExpense(User user, Expense expense, Scanner sc) throws BudgetExceededException {
+    public void addExpense(Expense expense, Scanner sc) throws BudgetExceededException {
         // Calculate what the total would be if we add this expense
-        double previousCumulativeTotal = ExpenseUtils.getLastCumulativeTotal(user.getName());
+        double previousCumulativeTotal = ExpenseUtils.getLastCumulativeTotal(ExpenseMain.CURRENT_USER.get().getName());
         double projectedTotal = previousCumulativeTotal 
-                              + user.calculateTotal() 
+                              + ExpenseMain.CURRENT_USER.get().calculateTotal() 
                               + expense.calculateExpense();
 
-        if (projectedTotal > user.getBudget()) {
-            double exceededBy = projectedTotal - user.getBudget();
-            user.setExceededAmount(exceededBy);
+        if (projectedTotal > ExpenseMain.CURRENT_USER.get().getBudget()) {
+            double exceededBy = projectedTotal - ExpenseMain.CURRENT_USER.get().getBudget();
+            ExpenseMain.CURRENT_USER.get().setExceededAmount(exceededBy);
 
-            System.err.println("\nBudget exceeded for user: " + user.getName());
+            System.err.println("\nBudget exceeded for user: " + ExpenseMain.CURRENT_USER.get().getName());
             System.err.println("Attempted Total: €" + String.format("%.2f", projectedTotal));
-            System.err.println("Budget: €" + String.format("%.2f", user.getBudget()));
+            System.err.println("Budget: €" + String.format("%.2f", ExpenseMain.CURRENT_USER.get().getBudget()));
             System.err.println("Exceeded by: €" + String.format("%.2f", exceededBy));
 
             System.out.print("Would you like to increase your budget? (yes/no): ");
@@ -60,24 +61,24 @@ public class ExpenseManager implements Calculatable {
                 	double extra = sc.nextDouble();
                 	sc.nextLine();
 
-                	double oldBudget = user.getBudget();
-                	user.setBudget(oldBudget + extra);
-                	System.out.println("Budget successfully updated to €" + String.format("%.2f", user.getBudget()));
+                	double oldBudget = ExpenseMain.CURRENT_USER.get().getBudget();
+                	ExpenseMain.CURRENT_USER.get().setBudget(oldBudget + extra);
+                	System.out.println("Budget successfully updated to €" + String.format("%.2f", ExpenseMain.CURRENT_USER.get().getBudget()));
 
                 	// Save updated budget persistently
                 	Map<String, String> userData = ExpenseUtils.loadUserData();
-                	String updatedValue = user.getBudget() + "," + java.time.LocalDate.now().getMonth();
-                	userData.put(user.getName(), updatedValue);
+                	String updatedValue = ExpenseMain.CURRENT_USER.get().getBudget() + "," + java.time.LocalDate.now().getMonth();
+                	userData.put(ExpenseMain.CURRENT_USER.get().getName(), updatedValue);
                 	ExpenseUtils.saveUserData(userData);
                 	System.out.println("User data updated successfully.");
 
                 	// Log the change
-                	BudgetHistoryManager.logBudgetChange(user.getName(), oldBudget, user.getBudget(), "Exceeded limit - manual increase");
+                	BudgetHistoryManager.logBudgetChange(ExpenseMain.CURRENT_USER.get().getName(), oldBudget,ExpenseMain.CURRENT_USER.get().getBudget(), "Exceeded limit - manual increase");
 
                     // Re check after increasing the budget
-                    if (projectedTotal > user.getBudget()) {
+                    if (projectedTotal > ExpenseMain.CURRENT_USER.get().getBudget()) {
                         throw new BudgetExceededException("Even after increase, budget still exceeded by €"
-                                + String.format("%.2f", projectedTotal - user.getBudget()));
+                                + String.format("%.2f", projectedTotal - ExpenseMain.CURRENT_USER.get().getBudget()));
                     }
                 // @JAVA 22 FEATURE: Unnamed variable
                 } catch (InputMismatchException _) {
@@ -92,7 +93,7 @@ public class ExpenseManager implements Calculatable {
 
         // Only add the expense after all checks are passed
         expenses.add(expense);
-        user.getExpenses().add(expense);
+        ExpenseMain.CURRENT_USER.get().getExpenses().add(expense);
     }
 
 
@@ -185,11 +186,27 @@ public class ExpenseManager implements Calculatable {
 	            .collect(Collectors.partitioningBy(Expense::isRecurring));
 	}
 	
-	public List<Expense> getTopThreeExpenses() {
+	public List<Expense> getTopExpenses(int limit) {
+
 	    return expenses.stream()
-	            .sorted(java.util.Comparator.comparing(Expense::calculateExpense).reversed())
-	            .limit(Math.min(3, expenses.size()))
-	            .toList();
+
+	            .sorted(java.util.Comparator
+	                    .comparing(Expense::calculateExpense)
+	                    .reversed())
+
+	            .gather(Gatherers.scan(
+	                    java.util.ArrayList<Expense>::new,
+	                    (list, exp) -> {
+	                        if (list.size() < limit) {
+	                            list.add(exp);
+	                        }
+	                        return list;
+	                    }
+	            ))
+
+	            .reduce((_, second) -> second)
+
+	            .orElse(new java.util.ArrayList<>());
 	}
 	
 	public List<ExpenseCategory> getDistinctCategoriesUsed() {
