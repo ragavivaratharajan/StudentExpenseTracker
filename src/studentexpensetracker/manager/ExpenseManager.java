@@ -26,7 +26,7 @@ import studentexpensetracker.helpers.ExpenseUtils;
  */
 
 // @Implements interface Calculatable
-public class ExpenseManager implements Calculatable {
+public final class ExpenseManager implements Calculatable {
 	
     private List<Expense> expenses;
     
