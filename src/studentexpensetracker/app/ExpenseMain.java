@@ -20,12 +20,12 @@ import java.util.Scanner;
  */
 public class ExpenseMain {
 	
+	// @Java 25 Scoped Values for efficient data sharing
 	public static final ScopedValue<User> CURRENT_USER = ScopedValue.newInstance();
 
 	/**
 	 * @param args
 	 */
-	// Instance main
 	public void run() {
         ExpenseManager manager = new ExpenseManager();
         Scanner sc = new Scanner(System.in);

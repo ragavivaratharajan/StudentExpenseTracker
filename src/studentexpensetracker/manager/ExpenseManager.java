@@ -31,11 +31,9 @@ public final class ExpenseManager implements Calculatable {
     private List<Expense> expenses;
     
     public ExpenseManager() {
-    	// @ArrayList: to store dynamic data
         this.expenses = new ArrayList<>();
     }
     
-    // @call-by-value: copy of reference user
     public void addExpense(Expense expense, Scanner sc) throws BudgetExceededException {
         // Calculate what the total would be if we add this expense
     	double previousCumulativeTotal = ExpenseUtils.getLastCumulativeTotal(ExpenseMain.CURRENT_USER.get().getName());
@@ -80,7 +78,6 @@ public final class ExpenseManager implements Calculatable {
                         throw new BudgetExceededException("Even after increase, budget still exceeded by €"
                                 + String.format("%.2f", projectedTotal - ExpenseMain.CURRENT_USER.get().getBudget()));
                     }
-                // @JAVA 22 FEATURE: Unnamed variable
                 } catch (InputMismatchException _) {
                     sc.nextLine();
                     throw new BudgetExceededException("Invalid input for budget increase.");
@@ -114,6 +111,7 @@ public final class ExpenseManager implements Calculatable {
 	}
 	
 	public Map<ExpenseCategory, Double> getTotalByCategory() {
+		// collect() - Collectors.groupingBy()
 	    return expenses.stream()
 	            .collect(Collectors.groupingBy(
 	                    Expense::getCategory,
@@ -122,7 +120,8 @@ public final class ExpenseManager implements Calculatable {
 	}
 	
 	public ExpenseReport generateReport() {
-
+		
+		// Concurrency using ExecutorService to process Callable tasks
 	    java.util.concurrent.ExecutorService executor =
 	            java.util.concurrent.Executors.newFixedThreadPool(2);
 
@@ -167,7 +166,6 @@ public final class ExpenseManager implements Calculatable {
         if (expenses.isEmpty()) {
             System.out.println("No expenses recorded yet.");
         } else {
-        	// @lambda: used to print each expense in the expenses list
         	java.util.function.Consumer<Expense> printer =
         	        exp -> System.out.println("• " + exp.getExpenseDetails());
 
@@ -176,12 +174,14 @@ public final class ExpenseManager implements Calculatable {
     }
 	
 	public List<Expense> getExpensesSortedByAmount() {
+		// Sorting using Comparator.comparing()
 	    return expenses.stream()
 	            .sorted(java.util.Comparator.comparing(Expense::calculateExpense))
 	            .toList();
 	}
 	
 	public Map<Boolean, List<Expense>> partitionRecurringExpenses() {
+		// collect() - Collectors.partitioningBy()
 	    return expenses.stream()
 	            .collect(Collectors.partitioningBy(Expense::isRecurring));
 	}
@@ -193,7 +193,7 @@ public final class ExpenseManager implements Calculatable {
 	            .sorted(java.util.Comparator
 	                    .comparing(Expense::calculateExpense)
 	                    .reversed())
-
+	             // @Java 25 Stream Gatherers (Gatherers.scan)
 	            .gather(Gatherers.scan(
 	                    java.util.ArrayList<Expense>::new,
 	                    (list, exp) -> {
@@ -220,7 +220,8 @@ public final class ExpenseManager implements Calculatable {
 	public void showExpenseAnalytics() {
 
 	    System.out.println("\nExpense Analytics:");
-
+	    
+	    // Streams terminal operations (min, max, count, anyMatch, etc.)
 	    expenses.stream()
 	            .min(java.util.Comparator.comparing(Expense::calculateExpense))
 	            .ifPresent(e -> System.out.println("Cheapest expense: " + e.getExpenseDetails()));
