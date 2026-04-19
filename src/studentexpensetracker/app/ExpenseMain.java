@@ -54,6 +54,8 @@ public class ExpenseMain {
         	// If a new month is detected, start with a new budget for that month.
         	if (!savedMonth.equalsIgnoreCase(currentMonth)) {
             	System.out.println(colorText("New month detected (" + currentMonth + "). Please enter a new budget.", YELLOW));
+            	
+            	// Lamba Expression: Supplier
             	java.util.function.Supplier<Double> suggestedBudget =
             	        () -> 500.0;
 

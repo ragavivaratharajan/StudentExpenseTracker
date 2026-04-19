@@ -99,7 +99,7 @@ public final class ExpenseManager implements Calculatable {
         return new ArrayList<>(expenses);
     }
     
-    // @Lambda expression + Predicate used for filtering expenses
+    // @Lambda expression: Predicate used for filtering expenses
     public List<Expense> filterExpenses(Predicate<Expense> condition) {
         return expenses.stream().filter(condition).toList();
     }
@@ -166,6 +166,7 @@ public final class ExpenseManager implements Calculatable {
         if (expenses.isEmpty()) {
             System.out.println("No expenses recorded yet.");
         } else {
+        	// @Lamba Expression : Consumer
         	java.util.function.Consumer<Expense> printer =
         	        exp -> System.out.println("• " + exp.getExpenseDetails());
 
@@ -210,6 +211,7 @@ public final class ExpenseManager implements Calculatable {
 	}
 	
 	public List<ExpenseCategory> getDistinctCategoriesUsed() {
+		// @Stream : Terminal operations
 	    return expenses.stream()
 	            .map(Expense::getCategory)
 	            .distinct()

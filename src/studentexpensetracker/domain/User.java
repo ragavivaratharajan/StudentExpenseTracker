@@ -25,7 +25,8 @@ public class User {
     
     // @Method overloading: same method name (constructor) with different parameters.
     public User(String name) {
-    	// @this(): calling another constructor User(name, budget)
+    	// @this(): calling another constructor User(name, budget) 
+    	// Flexible constructor body
     	if (name == null || name.isBlank()) {
             throw new InvalidExpenseException("User name cannot be empty.");
         }

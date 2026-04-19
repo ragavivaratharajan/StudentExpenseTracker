@@ -39,7 +39,7 @@ public final class ExpenseUtils {
 
 	public static String formatCurrency(double amount) {
 		
-		// Localisation - Formatting currency based on user locale (IE, US, GB, IN)
+		// Localisation - Formatting currency based on user locale
 	    java.util.Locale locale = getUserLocale();
 
 	    java.text.NumberFormat currencyFormatter =
